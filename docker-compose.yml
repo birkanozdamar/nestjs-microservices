@@ -15,27 +15,27 @@ services:
 
   sales-tracking-service:
     build:
-      context: ./user-service
-    container_name: user-service
+      context: ./sales-tracking-service
+    container_name: sales-tracking-service
     environment:
-      - DATABASE_HOST=user-db
+      - DATABASE_HOST=sales-tracking-service-db
       - DATABASE_PORT=3306
     depends_on:
-      - user-db
+      - sales-tracking-service-db
     networks:
-      - user-db-network
+      - sales-tracking-service-db-network
       - gateway-network
 
   sales-tracking-service-db:
     image: mysql:8
-    container_name: user-db
+    container_name: sales-tracking-service-db
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: userdb
+      MYSQL_DATABASE: salesTrackingServiceDb
     volumes:
-      - user-db-data:/var/lib/mysql
+      - sales-tracking-service-db-data:/var/lib/mysql
     networks:
-      - user-db    
+      - sales-tracking-service-db-network    
 
   user-service:
     build:
@@ -59,7 +59,7 @@ services:
     volumes:
       - user-db-data:/var/lib/mysql
     networks:
-      - user-db
+      -  user-db-network
 
   customer-service:
     build:
@@ -92,7 +92,10 @@ networks:
     driver: bridge
   gateway-network:
     driver: bridge
+  sales-tracking-service-db-network:
+    driver: bridge
 
 volumes:
   user-db-data:
   customer-db-data:
+  sales-tracking-service-db-data:
