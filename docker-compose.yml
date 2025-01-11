@@ -1,0 +1,98 @@
+version: '3.8'
+
+services:
+  apigateway:
+    build:
+      context: ./api-gateway
+    container_name: apigateway
+    ports:
+      - "3000:3000"
+    depends_on:
+      - user-service
+      - customer-service
+    networks:
+      - gateway-network
+
+  sales-tracking-service:
+    build:
+      context: ./user-service
+    container_name: user-service
+    environment:
+      - DATABASE_HOST=user-db
+      - DATABASE_PORT=3306
+    depends_on:
+      - user-db
+    networks:
+      - user-db-network
+      - gateway-network
+
+  sales-tracking-service-db:
+    image: mysql:8
+    container_name: user-db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: userdb
+    volumes:
+      - user-db-data:/var/lib/mysql
+    networks:
+      - user-db    
+
+  user-service:
+    build:
+      context: ./user-service
+    container_name: user-service
+    environment:
+      - DATABASE_HOST=user-db
+      - DATABASE_PORT=3306
+    depends_on:
+      - user-db
+    networks:
+      - user-db-network
+      - gateway-network
+
+  user-db:
+    image: mysql:8
+    container_name: user-db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: userdb
+    volumes:
+      - user-db-data:/var/lib/mysql
+    networks:
+      - user-db
+
+  customer-service:
+    build:
+      context: ./customer-service
+    container_name: customer-service
+    environment:
+      - DATABASE_HOST=customer-db
+      - DATABASE_PORT=3306
+    depends_on:
+      - customer-db
+    networks:
+      - customer-db-network
+      - gateway-network
+
+  customer-db:
+    image: mysql:8
+    container_name: customer-db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: customerdb
+    volumes:
+      - customer-db-data:/var/lib/mysql
+    networks:
+      - customer-db-network
+
+networks:
+  user-db-network:
+    driver: bridge
+  customer-db-network:
+    driver: bridge
+  gateway-network:
+    driver: bridge
+
+volumes:
+  user-db-data:
+  customer-db-data:
