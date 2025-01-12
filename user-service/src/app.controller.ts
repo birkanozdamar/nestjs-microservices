@@ -7,7 +7,7 @@ export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @MessagePattern({ cmd: 'get-user' })
-  getUser(data: { id: string }) {
-    return { id: data.id, name: 'John Doe', age: 30 };
+  getUser() {
+    return { id: 'asd', name: 'John Doe', age: 30 };
   }
 }
