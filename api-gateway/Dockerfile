@@ -1,10 +1,13 @@
-# Dockerfile
 FROM node:18-alpine
+
 WORKDIR /usr/src/app
+
 COPY package*.json ./
-RUN npm install
+
+RUN npm install && npm install --save-dev @nestjs/cli
+
 COPY . .
-# RUN npm run build
-# CMD ["npm", "run", "start:prod"]
-CMD ["npm", "run", "start:dev"]
+
 EXPOSE 3000
+
+CMD ["npm", "run", "start:dev"]

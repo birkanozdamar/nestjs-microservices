@@ -1,4 +1,3 @@
-version: '3.8'
 
 services:
   apigateway:
@@ -10,8 +9,13 @@ services:
     depends_on:
       - user-service
       - customer-service
+      - sales-tracking-service
     networks:
       - gateway-network
+    restart: unless-stopped
+    volumes:
+      - ./api-gateway:/usr/src/app
+      - ./api-gateway/node_modules:/usr/src/app/node_modules
 
   sales-tracking-service:
     build:
@@ -20,11 +24,21 @@ services:
     environment:
       - DATABASE_HOST=sales-tracking-service-db
       - DATABASE_PORT=3306
+      - DATABASE_USER=root
+      - DATABASE_PASSWORD=root
+      - DATABASE_NAME=salesTrackingServiceDb
     depends_on:
-      - sales-tracking-service-db
+      sales-tracking-service-db:
+        condition: service_healthy
     networks:
       - sales-tracking-service-db-network
       - gateway-network
+    restart: unless-stopped
+    volumes:
+      - ./sales-tracking-service:/usr/src/app
+      - ./sales-tracking-service/node_modules:/usr/src/app/node_modules
+    command: >
+      sh -c "if [ ! -d node_modules ]; then npm install; fi && npm run start:dev"
 
   sales-tracking-service-db:
     image: mysql:8
@@ -34,8 +48,16 @@ services:
       MYSQL_DATABASE: salesTrackingServiceDb
     volumes:
       - sales-tracking-service-db-data:/var/lib/mysql
+    ports:
+      - "3308:3306"
     networks:
-      - sales-tracking-service-db-network    
+      - sales-tracking-service-db-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   user-service:
     build:
@@ -44,11 +66,21 @@ services:
     environment:
       - DATABASE_HOST=user-db
       - DATABASE_PORT=3306
+      - DATABASE_USER=root
+      - DATABASE_PASSWORD=root
+      - DATABASE_NAME=userdb
     depends_on:
-      - user-db
+      user-db:
+        condition: service_healthy
     networks:
       - user-db-network
       - gateway-network
+    restart: unless-stopped
+    volumes:
+      - ./user-service:/usr/src/app
+      - ./user-service/node_modules:/usr/src/app/node_modules
+    command: >
+      sh -c "if [ ! -d node_modules ]; then npm install; fi && npm run start:dev"   
 
   user-db:
     image: mysql:8
@@ -58,8 +90,16 @@ services:
       MYSQL_DATABASE: userdb
     volumes:
       - user-db-data:/var/lib/mysql
+    ports:
+      - "3307:3306"
     networks:
-      -  user-db-network
+      - user-db-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   customer-service:
     build:
@@ -68,11 +108,21 @@ services:
     environment:
       - DATABASE_HOST=customer-db
       - DATABASE_PORT=3306
+      - DATABASE_USER=root
+      - DATABASE_PASSWORD=root
+      - DATABASE_NAME=customerdb
     depends_on:
-      - customer-db
+      customer-db:
+        condition: service_healthy
     networks:
       - customer-db-network
       - gateway-network
+    restart: unless-stopped
+    volumes:
+      - ./customer-service:/usr/src/app
+      - ./customer-service/node_modules:/usr/src/app/node_modules
+    command: >
+      sh -c "if [ ! -d node_modules ]; then npm install; fi && npm run start:dev"   
 
   customer-db:
     image: mysql:8
@@ -82,8 +132,16 @@ services:
       MYSQL_DATABASE: customerdb
     volumes:
       - customer-db-data:/var/lib/mysql
+    ports:
+      - "3309:3306"
     networks:
       - customer-db-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 networks:
   user-db-network:
@@ -96,6 +154,10 @@ networks:
     driver: bridge
 
 volumes:
+  apigateway:
+  user-service:
+  customer-service:
+  sales-tracking-service:
   user-db-data:
   customer-db-data:
   sales-tracking-service-db-data:
