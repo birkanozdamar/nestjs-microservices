@@ -1,28 +1,40 @@
 import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { LoginUserDto } from './dto/login-user.dto';
+import { JwtService } from '@nestjs/jwt';
+import { SignInUserServiceResponse } from './constants/constants';
 
 @Injectable()
 export class AuthService {
   constructor(
     @Inject('USER_SERVICE') private readonly authServiceClient: ClientProxy,
+    private jwtService: JwtService,
   ) {}
 
-  async loginUser(user: LoginUserDto): Promise<any> {
+  async loginUser(clientUser: LoginUserDto): Promise<any> {
     try {
-      const response = this.authServiceClient
-        .send(
+      const { status, user } = await this.authServiceClient
+        .send<SignInUserServiceResponse>(
           { cmd: 'sign-check' },
-          { email: user.email, password: user.password },
+          { email: clientUser.email, password: clientUser.password },
         )
         .toPromise();
 
-      if (!response) {
-        throw new UnauthorizedException('E-posta veya şifre hatalı!');
+      if (!status) {
+        return {
+          statusCode: 401,
+          message: 'Login Unsuccess',
+        };
       }
 
-      return { message: 'Giriş başarılı!', '' };
+      const payload = { sub: user.id, email: user.email };
+      console.log('asdasd333');
+      return {
+        message: 'Giriş başarılı!',
+        access_token: await this.jwtService.signAsync(payload),
+      };
     } catch (error) {
+      return UnauthorizedException;
       console.error(error);
     }
   }
