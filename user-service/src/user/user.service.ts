@@ -5,7 +5,6 @@ import { SignInDto } from './dto/signin-check.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
-import { MessagePattern } from '@nestjs/microservices';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -14,7 +13,6 @@ export class UserService {
     @InjectRepository(User) private usersRepository: Repository<User>,
   ) {}
 
-  @MessagePattern({ cmd: 'sign-check' })
   async signInCheck(signInDto: SignInDto) {
     const user = await this.usersRepository.findOne({
       where: { email: signInDto.email },
@@ -41,7 +39,7 @@ export class UserService {
       },
     };
   }
-  @MessagePattern({ cmd: 'user-create' })
+
   async create(createUserDto: CreateUserDto) {
     const user = new User();
     user.email = createUserDto.email;
@@ -50,17 +48,15 @@ export class UserService {
 
     return this.usersRepository.save(user);
   }
-  @MessagePattern({ cmd: 'user-all' })
+
   async findAll(): Promise<User[]> {
     return this.usersRepository.find();
   }
 
-  @MessagePattern({ cmd: 'user-find' })
   findOne(id: number): Promise<User> {
     return this.usersRepository.findOneBy({ id: id });
   }
 
-  @MessagePattern({ cmd: 'user-update' })
   async update(id: number, updateUserDto: UpdateUserDto) {
     const user = await this.usersRepository.findOneBy({ id: id });
 
