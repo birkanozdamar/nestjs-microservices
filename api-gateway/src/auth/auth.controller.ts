@@ -23,6 +23,6 @@ export class AuthController {
     @Res() response: Response,
     @Body() user: LoginUserDto,
   ): Promise<any> {
-    return this.authService.loginUser(user,response);
+    return this.authService.loginUser(user, response);
   }
 }
