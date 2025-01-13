@@ -32,27 +32,59 @@ export class UserService {
     if (!validPassword) {
       return { status: false };
     }
+    return {
+      status: true,
+      user: {
+        name: user.name,
+        email: user.email,
+        id: user.id,
+      },
+    };
+  }
+  @MessagePattern({ cmd: 'user-create' })
+  async create(createUserDto: CreateUserDto) {
+    const user = new User();
+    user.email = createUserDto.email;
+    user.name = createUserDto.name;
+    user.password = await bcrypt.hash(createUserDto.password, 10);
 
-    return { status: true };
+    return this.usersRepository.save(user);
+  }
+  @MessagePattern({ cmd: 'user-all' })
+  async findAll(): Promise<User[]> {
+    return this.usersRepository.find();
   }
 
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+  @MessagePattern({ cmd: 'user-find' })
+  findOne(id: number): Promise<User> {
+    return this.usersRepository.findOneBy({ id: id });
   }
 
-  findAll() {
-    return `This action returns all user`;
+  @MessagePattern({ cmd: 'user-update' })
+  async update(id: number, updateUserDto: UpdateUserDto) {
+    const user = await this.usersRepository.findOneBy({ id: id });
+
+    if (!user) {
+      return { status: false };
+    }
+
+    user.name = updateUserDto.name;
+    user.email = updateUserDto.email;
+
+    if (updateUserDto.password) {
+      user.password = await bcrypt.hash(updateUserDto.password, 10);
+    }
+
+    return this.usersRepository.save(user);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
-  }
+  async remove(id: number) {
+    const user = await this.usersRepository.findOneBy({ id: id });
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
-  }
+    if (!user) {
+      return { status: false };
+    }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+    return await this.usersRepository.softDelete(id);
   }
 }

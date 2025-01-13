@@ -21,10 +21,7 @@ export class AuthService {
         .toPromise();
 
       if (!status) {
-        return {
-          statusCode: 401,
-          message: 'Login Unsuccess',
-        };
+        return new UnauthorizedException();
       }
 
       const payload = { sub: user.id, email: user.email };
