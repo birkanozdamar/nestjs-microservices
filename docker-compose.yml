@@ -37,8 +37,6 @@ services:
     volumes:
       - ./sales-tracking-service:/usr/src/app
       - ./sales-tracking-service/node_modules:/usr/src/app/node_modules
-    command: >
-      sh -c "if [ ! -d node_modules ]; then npm install; fi && npm run start:dev"
 
   sales-tracking-service-db:
     image: mysql:8
@@ -49,7 +47,8 @@ services:
     volumes:
       - sales-tracking-service-db-data:/var/lib/mysql
     ports:
-      - "3308:3306"
+    # test için açık
+      - "3308:3306" 
     networks:
       - sales-tracking-service-db-network
     restart: unless-stopped
@@ -79,8 +78,6 @@ services:
     volumes:
       - ./user-service:/usr/src/app
       - ./user-service/node_modules:/usr/src/app/node_modules
-    command: >
-      sh -c "if [ ! -d node_modules ]; then npm install; fi && npm run start:dev"   
 
   user-db:
     image: mysql:8
@@ -91,6 +88,7 @@ services:
     volumes:
       - user-db-data:/var/lib/mysql
     ports:
+    # test için açık
       - "3307:3306"
     networks:
       - user-db-network
@@ -121,8 +119,6 @@ services:
     volumes:
       - ./customer-service:/usr/src/app
       - ./customer-service/node_modules:/usr/src/app/node_modules
-    command: >
-      sh -c "if [ ! -d node_modules ]; then npm install; fi && npm run start:dev"   
 
   customer-db:
     image: mysql:8
@@ -133,6 +129,7 @@ services:
     volumes:
       - customer-db-data:/var/lib/mysql
     ports:
+    # test için açık
       - "3309:3306"
     networks:
       - customer-db-network

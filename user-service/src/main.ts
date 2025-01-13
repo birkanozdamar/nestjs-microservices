@@ -4,7 +4,6 @@ import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { seedSuperAdmin } from 'database/seeder/user.seeder';
 import { DataSource } from 'typeorm';
 
-
 async function bootstrap() {
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(
     AppModule,
