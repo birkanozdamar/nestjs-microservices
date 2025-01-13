@@ -1,11 +1,32 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { ClientProxy } from '@nestjs/microservices';
 
 @Injectable()
 export class UserService {
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+  constructor(
+    @Inject('USER_SERVICE') private readonly authServiceClient: ClientProxy,
+  ) {}
+
+  async create(createUserDto: CreateUserDto) {
+    try {
+      const { status, user } = await this.authServiceClient
+        .send({ cmd: 'sign-check' }, createUserDto)
+        .toPromise();
+
+      if (!status) {
+        return new BadRequestException();
+      }
+
+      return {
+        message: 'Kayıt Başarılı',
+        user: user,
+      };
+    } catch (error) {
+      console.error(error);
+      return new BadRequestException();
+    }
   }
 
   findAll() {

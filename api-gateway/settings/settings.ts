@@ -13,8 +13,8 @@ export const jwtSettings = {
 
 //ThrottlerModule Ayarları DDOS atak için request sınırlıyıcı
 export const ThrottlerModuleSettings = {
-  ttl: 0, // her modul için farklı olması için bu şekilde - kaç saniyede bir olsun ?
-  limit: 0, // ttl süresi içinde kaç defa istek atabilir
+  ttl: 10000, // her modul için farklı olması için bu şekilde - kaç saniyede bir olsun ?
+  limit: 2, // ttl süresi içinde kaç defa istek atabilir
 };
 
 //User Servis TCP bağlantı Ayarları

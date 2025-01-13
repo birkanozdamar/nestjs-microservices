@@ -1,14 +1,15 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, HttpCode, Post, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginUserDto } from './dto/login-user.dto';
-import { Throttle } from '@nestjs/throttler';
+import { Response } from 'express';
+
 import { ApiResponse } from '@nestjs/swagger';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Throttle({ default: { limit: 1, ttl: 10000 } })
+  @HttpCode(200)
   @Post('/login')
   @ApiResponse({
     status: 200,
@@ -16,9 +17,12 @@ export class AuthController {
   })
   @ApiResponse({
     status: 401,
-    description: 'loggin succesfull',
+    description: 'loggin unsuccessfull',
   })
-  async loginUser(@Body() user: LoginUserDto): Promise<any> {
-    return this.authService.loginUser(user);
+  async loginUser(
+    @Res() response: Response,
+    @Body() user: LoginUserDto,
+  ): Promise<any> {
+    return this.authService.loginUser(user,response);
   }
 }

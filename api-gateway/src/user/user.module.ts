@@ -1,9 +1,26 @@
 import { Module } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserController } from './user.controller';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import {
+  ThrottlerModuleSettings,
+  UserServiceTCPConnectionSettings,
+} from 'settings/settings';
+import { ClientsModule } from '@nestjs/microservices';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
+  imports: [
+    ThrottlerModule.forRoot([ThrottlerModuleSettings]),
+    ClientsModule.register([UserServiceTCPConnectionSettings]),
+  ],
   controllers: [UserController],
-  providers: [UserService],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+    UserService,
+  ],
 })
 export class UserModule {}

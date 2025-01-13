@@ -6,14 +6,11 @@ import { ValidationPipe } from '@nestjs/common';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(new ValidationPipe());
-  app.setGlobalPrefix('api');
   const options = new DocumentBuilder()
     .setTitle('Your API Title')
     .setDescription('Your API description')
     .setVersion('1.0')
     .addServer('http://localhost:3000/', 'Local environment')
-    .addServer('https://staging.yourapi.com/', 'Staging')
-    .addServer('https://production.yourapi.com/', 'Production')
     .addTag('Your API Tag')
     .addGlobalParameters({
       name: 'country',
