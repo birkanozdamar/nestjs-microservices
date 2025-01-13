@@ -3,22 +3,39 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
   Param,
   ParseIntPipe,
   Post,
   Put,
+  Res,
+  UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { Response } from 'express';
+import { AuthGuard } from 'src/auth/auth.guard';
 
+@ApiBearerAuth()
 @Controller('user')
+@UseGuards(AuthGuard)
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  @ApiOperation({ summary: 'Yeni Kullanıcı Oluşturma' })
+  @ApiResponse({
+    status: 200,
+    description: 'user creted has been succesfull',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'user creted has been loggin unsuccessfull',
+  })
   @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.userService.create(createUserDto);
+  create(@Res() response: Response, @Body() createUserDto: CreateUserDto) {
+    return this.userService.create(createUserDto, response);
   }
 
   @Get()

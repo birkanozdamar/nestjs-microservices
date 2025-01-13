@@ -8,7 +8,7 @@ dotenv.config();
 export const jwtSettings = {
   global: true,
   secret: process.env.JWT_SECRET,
-  signOptions: { expiresIn: '60s' },
+  signOptions: { expiresIn: '1d' },
 };
 
 //ThrottlerModule Ayarları DDOS atak için request sınırlıyıcı
