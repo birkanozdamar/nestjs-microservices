@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { seedSuperAdmin } from 'database/seeder/user.seeder';
 import { DataSource } from 'typeorm';
+import { seedRoles } from 'database/seeder/role.seeder';
 
 async function bootstrap() {
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(
@@ -15,10 +16,13 @@ async function bootstrap() {
       },
     },
   );
-  const dataSource = app.get(DataSource); //başlangıçta süper admin oluşturmak için
-  await seedSuperAdmin(dataSource); // başlangıçta süper admin oluşturmak için
 
+  // başlangıç verilerini kontrol eder yoksa ekler burada
+  const dataSource = app.get(DataSource);
+  await seedSuperAdmin(dataSource);
+  await seedRoles(dataSource);
   await app.listen();
+
   console.log('User-Service is running on TCP port 4000');
 }
 bootstrap();
