@@ -5,6 +5,7 @@ import { UserModule } from './user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { getConfig } from 'database/source/data-source.config';
 import { RoleModule } from './role/role.module';
+import { RoleToUserModule } from './role-to-user/role-to-user.module';
 
 @Module({
   controllers: [AppController],
@@ -15,6 +16,7 @@ import { RoleModule } from './role/role.module';
     }),
     UserModule,
     RoleModule,
+    RoleToUserModule,
   ],
 })
 export class AppModule {}
