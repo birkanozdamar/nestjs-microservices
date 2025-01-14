@@ -6,6 +6,7 @@ import { Response } from 'express';
 import {
   CreateUserServiceResponse,
   FindAllUserServiceResponse,
+  FindUserServiceResponse,
 } from 'src/auth/constants/constants';
 
 @Injectable()
@@ -65,8 +66,29 @@ export class UserService {
     }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOne(response: Response, id: number) {
+    try {
+      const { status, user } = await this.userServiceClient
+        .send<FindUserServiceResponse>({ cmd: 'findOneUser' }, { id })
+        .toPromise();
+
+      if (!status) {
+        return response.status(HttpStatus.NOT_FOUND).send({
+          message: 'Kullanıcı bulunamadı',
+        });
+      }
+      console.log(user);
+      return response.status(HttpStatus.OK).send({
+        message: 'kullanıcı!',
+        user: user,
+      });
+    } catch (error) {
+      console.error(error);
+      return response.status(HttpStatus.BAD_REQUEST).send({
+        message: 'İşlem Başarısız!',
+      });
+    }
+
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {

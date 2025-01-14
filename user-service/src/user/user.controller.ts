@@ -29,21 +29,31 @@ export class UserController {
   @MessagePattern({ cmd: 'findAllUser' })
   async findAll(@Payload() findAllDto: PaginationDto) {
     const users = await this.userService.findAll(findAllDto);
-    console.log(users);
-    const usersResponses = plainToInstance(UserDto, users, {
+
+    const usersResponse = plainToInstance(UserDto, users, {
       excludeExtraneousValues: true,
     });
-    console.log(usersResponses);
+
     return {
       status: true,
-      users: usersResponses,
+      users: usersResponse,
       messages: 'Kullanıcılar',
     };
   }
 
-  @MessagePattern('findOneUser')
-  findOne(@Payload() id: number) {
-    return this.userService.findOne(id);
+  @MessagePattern({ cmd: 'findOneUser' })
+  async findOne(@Payload() id: number) {
+    const user = await this.userService.findOne(id);
+
+    const userResponse = plainToInstance(UserDto, user, {
+      excludeExtraneousValues: true,
+    });
+
+    return {
+      status: true,
+      user: userResponse, // gereksiz verler veya güvnelik açığı oluşturabilecek bilgiler gizlendi
+      messages: 'Kullanıcı',
+    };
   }
 
   @MessagePattern('updateUser')

@@ -21,3 +21,9 @@ export interface FindAllUserServiceResponse {
   users: User[];
   message: string;
 }
+
+export interface FindUserServiceResponse {
+  status: boolean;
+  user: User;
+  message: string;
+}
