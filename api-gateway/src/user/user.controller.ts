@@ -38,9 +38,13 @@ export class UserController {
     return this.userService.create(createUserDto, response);
   }
 
-  @Get()
-  findAll() {
-    return this.userService.findAll();
+  @Get('/:page/:limit')
+  async findAll(
+    @Res() response: Response,
+    @Param('page') page: number,
+    @Param('limit') limit: number,
+  ) {
+    return this.userService.findAll(response, page, limit);
   }
 
   @Get(':id')

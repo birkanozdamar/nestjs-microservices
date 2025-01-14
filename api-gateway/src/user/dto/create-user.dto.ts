@@ -15,7 +15,6 @@ export class CreateUserDto {
   @ApiProperty({
     example: 'jhon',
   })
-  @IsEmail()
   name: string;
 
   @IsNotEmpty()

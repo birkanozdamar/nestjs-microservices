@@ -24,7 +24,6 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
   @ApiProperty({
     example: 'jhon',
   })
-  @IsEmail()
   name: string;
 
   @IsNotEmpty()

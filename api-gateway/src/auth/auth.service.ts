@@ -1,9 +1,4 @@
-import {
-  HttpStatus,
-  Inject,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { LoginUserDto } from './dto/login-user.dto';
 import { JwtService } from '@nestjs/jwt';
@@ -20,13 +15,14 @@ export class AuthService {
 
   async loginUser(clientUser: LoginUserDto, response: Response): Promise<any> {
     try {
+      console.log(clientUser);
       const { status, user } = await this.authServiceClient
         .send<SignInUserServiceResponse>(
-          { cmd: 'sign-check' },
+          { cmd: 'signCheck' },
           { email: clientUser.email, password: clientUser.password },
         )
         .toPromise();
-      console.log(status);
+      console.log(user);
       if (!status) {
         return response.status(HttpStatus.UNAUTHORIZED).send({
           message: 'Giriş başarısız!',
@@ -39,8 +35,10 @@ export class AuthService {
         access_token: await this.jwtService.signAsync(payload),
       });
     } catch (error) {
-      return UnauthorizedException;
       console.error(error);
+      return response.status(HttpStatus.UNAUTHORIZED).send({
+        message: 'Giriş başarısız!',
+      });
     }
   }
 }
