@@ -14,7 +14,7 @@ export class UserService {
   constructor(
     @Inject('USER_SERVICE') private readonly userServiceClient: ClientProxy,
   ) {}
-  // createUser,findAllUser,findOneUser,updateUser,removeUser
+
   async create(createUserDto: CreateUserDto, response: Response) {
     try {
       const { status, user } = await this.userServiceClient
@@ -77,7 +77,7 @@ export class UserService {
           message: 'Kullanıcı bulunamadı',
         });
       }
-      console.log(user);
+
       return response.status(HttpStatus.OK).send({
         message: 'kullanıcı!',
         user: user,
@@ -88,14 +88,56 @@ export class UserService {
         message: 'İşlem Başarısız!',
       });
     }
-
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(response: Response, id: number, updateUserDto: UpdateUserDto) {
+    try {
+      const { status, user } = await this.userServiceClient
+        .send<FindUserServiceResponse>(
+          { cmd: 'updateUser' },
+          { id, updateUserDto },
+        )
+        .toPromise();
+
+      if (!status) {
+        return response.status(HttpStatus.NOT_FOUND).send({
+          message: 'Kullanıcı bulunamadı',
+        });
+      }
+
+      return response.status(HttpStatus.OK).send({
+        message: 'kullanıcı!',
+        user: user,
+      });
+    } catch (error) {
+      console.error(error);
+      return response.status(HttpStatus.BAD_REQUEST).send({
+        message: 'İşlem Başarısız!',
+      });
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(response: Response, id: number) {
+    try {
+      const { status, user } = await this.userServiceClient
+        .send<FindUserServiceResponse>({ cmd: 'removeUser' }, { id })
+        .toPromise();
+
+      if (!status) {
+        return response.status(HttpStatus.NOT_FOUND).send({
+          message: 'Kullanıcı silinemedi',
+        });
+      }
+
+      return response.status(HttpStatus.OK).send({
+        message: 'kullanıcı silindi!',
+        user: user,
+      });
+    } catch (error) {
+      console.error(error);
+      return response.status(HttpStatus.BAD_REQUEST).send({
+        message: 'İşlem Başarısız!',
+      });
+    }
   }
 }

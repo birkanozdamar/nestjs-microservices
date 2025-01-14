@@ -15,14 +15,13 @@ export class AuthService {
 
   async loginUser(clientUser: LoginUserDto, response: Response): Promise<any> {
     try {
-      console.log(clientUser);
       const { status, user } = await this.authServiceClient
         .send<SignInUserServiceResponse>(
           { cmd: 'signCheck' },
           { email: clientUser.email, password: clientUser.password },
         )
         .toPromise();
-      console.log(user);
+
       if (!status) {
         return response.status(HttpStatus.UNAUTHORIZED).send({
           message: 'Giriş başarısız!',

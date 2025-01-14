@@ -42,8 +42,27 @@ export class UserController {
   }
 
   @MessagePattern({ cmd: 'findOneUser' })
-  async findOne(@Payload() id: number) {
+  async findOne(@Payload() payload: { id: number }) {
+    const { id } = payload;
     const user = await this.userService.findOne(id);
+    const userResponse = plainToInstance(UserDto, user, {
+      excludeExtraneousValues: true,
+    });
+
+    return {
+      status: true,
+      user: userResponse, // gereksiz veriler veya güvenlik açığı oluşturabilecek bilgiler gizlendi
+      messages: 'Kullanıcı',
+    };
+  }
+
+  @MessagePattern({ cmd: 'updateUser' })
+  async update(
+    @Payload() payload: { id: number; updateUserDto: UpdateUserDto },
+  ) {
+    const { id, updateUserDto } = payload;
+
+    const user = await this.userService.update(id, updateUserDto);
 
     const userResponse = plainToInstance(UserDto, user, {
       excludeExtraneousValues: true,
@@ -51,18 +70,19 @@ export class UserController {
 
     return {
       status: true,
-      user: userResponse, // gereksiz verler veya güvnelik açığı oluşturabilecek bilgiler gizlendi
-      messages: 'Kullanıcı',
+      user: userResponse,
+      messages: 'Kullanıcı Güncellendi',
     };
   }
 
-  @MessagePattern('updateUser')
-  update(@Payload() updateUserDto: UpdateUserDto) {
-    return this.userService.update(updateUserDto.id, updateUserDto);
-  }
-
-  @MessagePattern('removeUser')
-  remove(@Payload() id: number) {
-    return this.userService.remove(id);
+  @MessagePattern({ cmd: 'removeUser' })
+  async remove(@Payload() payload: { id: number }) {
+    const { id } = payload;
+    await this.userService.remove(id);
+    return {
+      status: true,
+      user: '',
+      messages: 'Kullanıcı Silindi',
+    };
   }
 }

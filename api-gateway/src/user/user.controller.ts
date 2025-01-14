@@ -3,7 +3,6 @@ import {
   Controller,
   Delete,
   Get,
-  HttpCode,
   Param,
   ParseIntPipe,
   Post,
@@ -53,12 +52,16 @@ export class UserController {
   }
 
   @Put(':id')
-  update(@Param('id') userId: string, updateUserDto: UpdateUserDto) {
-    return this.userService.update(updateUserDto.id, updateUserDto);
+  update(
+    @Res() response: Response,
+    @Param('id') userId: number,
+    @Body() updateUserDto: UpdateUserDto,
+  ) {
+    return this.userService.update(response, userId, updateUserDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: number) {
-    return this.userService.remove(id);
+  remove(@Res() response: Response, @Param('id') id: number) {
+    return this.userService.remove(response, id);
   }
 }

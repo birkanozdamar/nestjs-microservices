@@ -1,4 +1,4 @@
-import { BadGatewayException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { SignInDto } from './dto/signin-check.dto';
@@ -72,8 +72,10 @@ export class UserService {
     });
   }
 
-  findOne(id: number): Promise<User> {
-    return this.usersRepository.findOneBy({ id: id });
+  async findOne(id: number) {
+    const user = await this.usersRepository.findOneBy({ id: id });
+
+    return user;
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
