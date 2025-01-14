@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadGatewayException, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { SignInDto } from './dto/signin-check.dto';
@@ -6,6 +6,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
+import PaginationDto from './dto/find-all-user.dto';
 
 @Injectable()
 export class UserService {
@@ -41,16 +42,34 @@ export class UserService {
   }
 
   async create(createUserDto: CreateUserDto) {
-    const user = new User();
-    user.email = createUserDto.email;
-    user.name = createUserDto.name;
-    user.password = await bcrypt.hash(createUserDto.password, 10);
+    try {
+      const user = new User();
+      user.email = createUserDto.email;
+      user.name = createUserDto.name;
+      user.password = await bcrypt.hash(createUserDto.password, 10);
 
-    return this.usersRepository.save(user);
+      return {
+        status: true,
+        user: this.usersRepository.save(user),
+      };
+    } catch (error) {
+      console.error(error);
+      return {
+        status: false,
+        user: '',
+        message: error,
+      };
+    }
   }
 
-  async findAll(): Promise<User[]> {
-    return this.usersRepository.find();
+  async findAll(paginationDto: PaginationDto): Promise<User[]> {
+    const { page, limit } = paginationDto;
+    const skip = (page - 1) * limit;
+
+    return this.usersRepository.find({
+      skip: skip,
+      take: limit,
+    });
   }
 
   findOne(id: number): Promise<User> {
