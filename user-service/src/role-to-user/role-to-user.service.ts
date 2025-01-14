@@ -24,7 +24,7 @@ export class RoleToUserService {
 
   async assignToRole(assignRoleDto: AssignRoleDto) {
     const queryRunner = this.dataSource.createQueryRunner();
-
+    console.log(assignRoleDto);
     await queryRunner.connect();
     await queryRunner.startTransaction();
 
@@ -34,6 +34,7 @@ export class RoleToUserService {
         this.userRepository.findOneBy({ id: assignRoleDto.user_id }),
       ]);
 
+      console.log(role, user);
       if (!role) throw new NotFoundException('Role Not Found');
       if (!user) throw new NotFoundException('User Not Found');
 
@@ -51,11 +52,11 @@ export class RoleToUserService {
         role_id: assignRoleDto.role_id,
         created_by_id: assignRoleDto.created_by_id,
       });
-
+      console.log('asdasd1');
       await queryRunner.manager.save(roleToUser);
-
+      console.log('asdasd2');
       await queryRunner.commitTransaction();
-      return { message: 'Role assigned successfully' };
+      return { status: true, message: 'Role assigned successfully' };
     } catch (error) {
       await queryRunner.rollbackTransaction();
       throw error;

@@ -14,9 +14,6 @@ export class RoleToUser extends BaseEntity {
   public id: number;
 
   @Column()
-  name: string;
-
-  @Column()
   user_id: number;
 
   @Column()
