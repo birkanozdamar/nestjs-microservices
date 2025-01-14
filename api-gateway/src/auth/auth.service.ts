@@ -2,7 +2,7 @@ import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { LoginUserDto } from './dto/login-user.dto';
 import { JwtService } from '@nestjs/jwt';
-import { SignInUserServiceResponse } from './constants/constants';
+import { SignInUserServiceResponseType } from './constants/userServiceResponseTypes';
 
 import { Response } from 'express';
 
@@ -15,8 +15,9 @@ export class AuthService {
 
   async loginUser(clientUser: LoginUserDto, response: Response): Promise<any> {
     try {
+      console.log('asd');
       const { status, user } = await this.authServiceClient
-        .send<SignInUserServiceResponse>(
+        .send<SignInUserServiceResponseType>(
           { cmd: 'signCheck' },
           { email: clientUser.email, password: clientUser.password },
         )
@@ -28,7 +29,7 @@ export class AuthService {
         });
       }
 
-      const payload = { sub: user.id, email: user.email };
+      const payload = { id: user.id, email: user.email };
       return response.status(HttpStatus.OK).send({
         message: 'Giriş başarılı!',
         access_token: await this.jwtService.signAsync(payload),

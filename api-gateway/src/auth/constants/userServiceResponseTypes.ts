@@ -1,4 +1,4 @@
-export interface SignInUserServiceResponse {
+export interface SignInUserServiceResponseType {
   status: boolean;
   user: User;
   message: string;
@@ -10,20 +10,25 @@ export interface User {
   name: string;
 }
 
-export interface CreateUserServiceResponse {
+export interface CreateUserServiceResponseType {
   status: boolean;
   user: User;
   message: string;
 }
 
-export interface FindAllUserServiceResponse {
+export interface FindAllUserServiceResponseType {
   status: boolean;
   users: User[];
   message: string;
 }
 
-export interface FindUserServiceResponse {
+export interface FindUserServiceResponseType {
   status: boolean;
   user: User;
+  message: string;
+}
+
+export interface AssignRoleUserServiceResponseType {
+  status: boolean;
   message: string;
 }

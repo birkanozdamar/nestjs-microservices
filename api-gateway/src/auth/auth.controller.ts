@@ -24,6 +24,7 @@ export class AuthController {
     @Res() response: Response,
     @Body() user: LoginUserDto,
   ): Promise<any> {
+    console.log('asdasd');
     return this.authService.loginUser(user, response);
   }
 }

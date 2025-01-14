@@ -4,10 +4,10 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { ClientProxy } from '@nestjs/microservices';
 import { Response } from 'express';
 import {
-  CreateUserServiceResponse,
-  FindAllUserServiceResponse,
-  FindUserServiceResponse,
-} from 'src/auth/constants/constants';
+  CreateUserServiceResponseType,
+  FindAllUserServiceResponseType,
+  FindUserServiceResponseType,
+} from 'src/auth/constants/userServiceResponseTypes';
 
 @Injectable()
 export class UserService {
@@ -18,7 +18,10 @@ export class UserService {
   async create(createUserDto: CreateUserDto, response: Response) {
     try {
       const { status, user } = await this.userServiceClient
-        .send<CreateUserServiceResponse>({ cmd: 'createUser' }, createUserDto)
+        .send<CreateUserServiceResponseType>(
+          { cmd: 'createUser' },
+          createUserDto,
+        )
         .toPromise();
 
       if (!status) {
@@ -42,7 +45,7 @@ export class UserService {
   async findAll(response: Response, page: number, limit: number) {
     try {
       const { status, users } = await this.userServiceClient
-        .send<FindAllUserServiceResponse>(
+        .send<FindAllUserServiceResponseType>(
           { cmd: 'findAllUser' },
           { page, limit },
         )
@@ -69,7 +72,7 @@ export class UserService {
   async findOne(response: Response, id: number) {
     try {
       const { status, user } = await this.userServiceClient
-        .send<FindUserServiceResponse>({ cmd: 'findOneUser' }, { id })
+        .send<FindUserServiceResponseType>({ cmd: 'findOneUser' }, { id })
         .toPromise();
 
       if (!status) {
@@ -93,7 +96,7 @@ export class UserService {
   async update(response: Response, id: number, updateUserDto: UpdateUserDto) {
     try {
       const { status, user } = await this.userServiceClient
-        .send<FindUserServiceResponse>(
+        .send<FindUserServiceResponseType>(
           { cmd: 'updateUser' },
           { id, updateUserDto },
         )
@@ -120,7 +123,7 @@ export class UserService {
   async remove(response: Response, id: number) {
     try {
       const { status, user } = await this.userServiceClient
-        .send<FindUserServiceResponse>({ cmd: 'removeUser' }, { id })
+        .send<FindUserServiceResponseType>({ cmd: 'removeUser' }, { id })
         .toPromise();
 
       if (!status) {
