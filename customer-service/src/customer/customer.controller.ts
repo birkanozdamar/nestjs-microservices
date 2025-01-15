@@ -1,35 +1,65 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
-import { CustomerService } from './customer.service';
+import PaginationDto from './dto/pagination.dto';
 import { CreateCustomerDto } from './dto/create-customer.dto';
+import { CustomerService } from './customer.service';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
 
-@Controller()
+@Controller('customer')
 export class CustomerController {
   constructor(private readonly customerService: CustomerService) {}
 
-  @MessagePattern('createCustomer')
+  @MessagePattern({ cmd: 'createCustomer' })
   create(@Payload() createCustomerDto: CreateCustomerDto) {
     return this.customerService.create(createCustomerDto);
   }
 
-  @MessagePattern('findAllCustomer')
-  findAll() {
-    return this.customerService.findAll();
+  @MessagePattern({ cmd: 'findAllCustomer' })
+  async findAll(@Payload() findAllDto: PaginationDto) {
+    const customers = await this.customerService.findAll(findAllDto);
+
+    return {
+      status: true,
+      customers: customers,
+      messages: 'Customers',
+    };
   }
 
-  @MessagePattern('findOneCustomer')
-  findOne(@Payload() id: number) {
-    return this.customerService.findOne(id);
+  @MessagePattern({ cmd: 'findOneCustomer' })
+  async findOne(@Payload() payload: { id: number }) {
+    const { id } = payload;
+    const customer = await this.customerService.findOne(id);
+
+    return {
+      status: true,
+      customer: customer,
+      messages: 'Müşteri',
+    };
   }
 
-  @MessagePattern('updateCustomer')
-  update(@Payload() updateCustomerDto: UpdateCustomerDto) {
-    return this.customerService.update(updateCustomerDto.id, updateCustomerDto);
+  @MessagePattern({ cmd: 'updateCustomer' })
+  async update(
+    @Payload() payload: { id: number; updateCustomerDto: UpdateCustomerDto },
+  ) {
+    const { id, updateCustomerDto } = payload;
+
+    const user = await this.customerService.update(id, updateCustomerDto);
+
+    return {
+      status: true,
+      user: user,
+      messages: 'Kullanıcı Güncellendi',
+    };
   }
 
-  @MessagePattern('removeCustomer')
-  remove(@Payload() id: number) {
-    return this.customerService.remove(id);
+  @MessagePattern({ cmd: 'removeCustomer' })
+  async remove(@Payload() payload: { id: number }) {
+    const { id } = payload;
+    await this.customerService.remove(id);
+    return {
+      status: true,
+      user: '',
+      messages: 'Kullanıcı Silindi',
+    };
   }
 }

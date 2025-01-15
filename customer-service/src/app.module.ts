@@ -1,12 +1,17 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-// import { MongooseModule } from '@nestjs/mongoose';
-// import { TypeOrmModule } from '@nestjs/typeorm';
 import { CustomerModule } from './customer/customer.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { getConfig } from 'database/source/data-source.config';
 
 @Module({
-  imports: [CustomerModule],
+  imports: [
+    TypeOrmModule.forRootAsync({
+      useFactory: () => getConfig(),
+    }),
+    CustomerModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
