@@ -1,10 +1,10 @@
 export interface SignInCustomerServiceResponseType {
   status: boolean;
-  customer: Customer;
+  customer: CustomerType;
   message: string;
 }
 
-export interface Customer {
+export interface CustomerType {
   email: string;
   id: number;
   name: string;
@@ -14,23 +14,48 @@ export interface Customer {
 
 export interface CreateCustomerServiceResponseType {
   status: boolean;
-  customer: Customer;
+  customer: CustomerType;
   message: string;
 }
 
 export interface FindAllCustomerServiceResponseType {
   status: boolean;
-  customers: Customer[];
+  customers: CustomerType[];
   message: string;
 }
 
 export interface FindCustomerServiceResponseType {
   status: boolean;
-  customer: Customer;
+  customer: CustomerType;
   message: string;
 }
 
 export interface AssignRoleCustomerServiceResponseType {
   status: boolean;
   message: string;
+}
+
+export interface CreateCustomerNoteServiceResponseType {
+  status: boolean;
+  customerNote: CustomerNoteType;
+  message: string;
+}
+
+export interface GetCustomerNotesServiceResponseType {
+  status: boolean;
+  customerNotes: CustomerNoteType[];
+  message: string;
+}
+
+export interface UpdateCustomerNoteServiceResponseType {
+  status: boolean;
+  customerNote: CustomerNoteType;
+  message: string;
+}
+
+export interface CustomerNoteType {
+  _id: string;
+  customer_not: string;
+  customer_id: number;
+  created_by_id: number;
 }

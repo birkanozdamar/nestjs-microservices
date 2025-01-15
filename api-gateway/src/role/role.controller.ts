@@ -18,7 +18,7 @@ import { Response } from 'express';
 export class RoleController {
   constructor(private readonly roleService: RoleService) {}
 
-  @ApiOperation({ summary: 'Yeni Role Oluşturma' })
+  @ApiOperation({ summary: 'Kullanıcıta Role Atama' })
   @ApiResponse({
     status: 200,
     description: 'Yeni Role Oluşturma Başarılı',
