@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { CustomerModule } from './customer/customer.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { getConfig } from 'database/source/data-source.config';
+import { CustomerNotesModule } from './customer-notes/customer-notes.module';
 
 @Module({
   imports: [
@@ -11,6 +12,7 @@ import { getConfig } from 'database/source/data-source.config';
       useFactory: () => getConfig(),
     }),
     CustomerModule,
+    CustomerNotesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
