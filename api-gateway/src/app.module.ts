@@ -5,6 +5,7 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { RoleModule } from './role/role.module';
+import { CustomerModule } from './customer/customer.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { RoleModule } from './role/role.module';
     UserModule,
     AuthModule,
     RoleModule,
+    CustomerModule,
   ],
   controllers: [AppController],
   providers: [AppService],
