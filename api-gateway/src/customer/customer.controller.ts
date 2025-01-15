@@ -23,7 +23,7 @@ import { UpdateCustomerDto } from './dto/update-customer.dto';
 export class CustomerController {
   constructor(private readonly customerService: CustomerService) {}
 
-  @ApiOperation({ summary: 'Yeni Kullanıcı Oluşturma' })
+  @ApiOperation({ summary: 'Yeni Müşteri Oluşturma' })
   @ApiResponse({
     status: 200,
     description: 'customer creted has been succesfull',

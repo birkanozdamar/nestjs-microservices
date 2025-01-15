@@ -26,3 +26,13 @@ export const UserServiceTCPConnectionSettings: ClientProviderOptions = {
     port: 4000,
   },
 };
+
+//Customer Servis TCP bağlantı Ayarları
+export const CustomerServiceTCPConnectionSettings: ClientProviderOptions = {
+  name: 'CUSTOMER_SERVICE',
+  transport: Transport.TCP,
+  options: {
+    host: 'customer-service',
+    port: 4001,
+  },
+};
