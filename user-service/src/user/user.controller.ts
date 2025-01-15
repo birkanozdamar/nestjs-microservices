@@ -4,7 +4,7 @@ import { UserService } from './user.service';
 import { SignInDto } from './dto/signin-check.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import PaginationDto from './dto/find-all-user.dto';
+import PaginationDto from './dto/pagination.dto';
 import { plainToInstance } from 'class-transformer';
 import { UserDto } from './dto/user-respose.dto';
 
