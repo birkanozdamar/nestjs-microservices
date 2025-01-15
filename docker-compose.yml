@@ -112,6 +112,8 @@ services:
     depends_on:
       customer-db:
         condition: service_healthy
+      customer-mongo-db:
+        condition: service_healthy
     networks:
       - customer-db-network
       - gateway-network
@@ -140,6 +142,25 @@ services:
       timeout: 5s
       retries: 5
 
+  customer-mongo-db:
+    image: mongo
+    container_name: customer-mongo-db
+    ports:
+    - 27017:27017                 
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin123
+    volumes:
+      - customer-mongo-db:/data/db  
+    networks:
+      - customer-db-network         
+    restart: unless-stopped
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh --quiet --host localhost -u admin -p admin123
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
 networks:
   user-db-network:
     driver: bridge
@@ -158,3 +179,4 @@ volumes:
   user-db-data:
   customer-db-data:
   sales-tracking-service-db-data:
+  customer-mongo-db:
