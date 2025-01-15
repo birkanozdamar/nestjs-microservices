@@ -4,7 +4,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { SignInDto } from './dto/signin-check.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
-import { Repository } from 'typeorm';
+import { Repository, DataSource } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import PaginationDto from './dto/find-all-user.dto';
 
@@ -12,96 +12,150 @@ import PaginationDto from './dto/find-all-user.dto';
 export class UserService {
   constructor(
     @InjectRepository(User) private usersRepository: Repository<User>,
+    private dataSource: DataSource,
   ) {}
 
   async signInCheck(signInDto: SignInDto) {
-    const user = await this.usersRepository.findOne({
-      where: { email: signInDto.email },
-    });
+    try {
+      const user = await this.usersRepository.findOne({
+        where: { email: signInDto.email },
+      });
 
-    if (!user) {
-      return { status: false };
+      if (!user) {
+        return { status: false };
+      }
+
+      const validPassword = await bcrypt.compare(
+        signInDto.password,
+        user.password,
+      );
+
+      if (!validPassword) {
+        return { status: false };
+      }
+      return {
+        status: true,
+        user: {
+          name: user.name,
+          email: user.email,
+          id: user.id,
+        },
+      };
+    } catch (error) {
+      console.error(error);
+      return { status: false, message: 'Error during sign-in.' };
     }
-
-    const validPassword = await bcrypt.compare(
-      signInDto.password,
-      user.password,
-    );
-
-    if (!validPassword) {
-      return { status: false };
-    }
-    return {
-      status: true,
-      user: {
-        name: user.name,
-        email: user.email,
-        id: user.id,
-      },
-    };
   }
 
   async create(createUserDto: CreateUserDto) {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
     try {
       const user = new User();
       user.email = createUserDto.email;
       user.name = createUserDto.name;
       user.password = await bcrypt.hash(createUserDto.password, 10);
 
+      await queryRunner.manager.save(user);
+      await queryRunner.commitTransaction();
+
       return {
         status: true,
-        user: this.usersRepository.save(user),
+        user: user,
       };
     } catch (error) {
+      await queryRunner.rollbackTransaction();
       console.error(error);
       return {
         status: false,
         user: '',
         message: error,
       };
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
+  async update(id: number, updateUserDto: UpdateUserDto) {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      const user = await this.usersRepository.findOneBy({ id: id });
+
+      if (!user) {
+        return { status: false };
+      }
+
+      user.name = updateUserDto.name;
+      user.email = updateUserDto.email;
+
+      if (updateUserDto.password) {
+        user.password = await bcrypt.hash(updateUserDto.password, 10);
+      }
+
+      await queryRunner.manager.save(user);
+      await queryRunner.commitTransaction();
+
+      return { status: true, user };
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      console.error(error);
+      return { status: false, message: 'Error during update.' };
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
+  async remove(id: number) {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      const user = await this.usersRepository.findOneBy({ id: id });
+
+      if (!user) {
+        return { status: false };
+      }
+
+      await queryRunner.manager.softDelete(User, id);
+      await queryRunner.commitTransaction();
+
+      return { status: true, message: 'User deleted successfully.' };
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      console.error(error);
+      return { status: false, message: 'Error during deletion.' };
+    } finally {
+      await queryRunner.release();
     }
   }
 
   async findAll(paginationDto: PaginationDto): Promise<User[]> {
-    const { page, limit } = paginationDto;
-    const skip = (page - 1) * limit;
+    try {
+      const { page, limit } = paginationDto;
+      const skip = (page - 1) * limit;
 
-    return this.usersRepository.find({
-      skip: skip,
-      take: limit,
-    });
+      return this.usersRepository.find({
+        skip: skip,
+        take: limit,
+      });
+    } catch (error) {
+      console.error(error);
+      throw new Error('Error fetching users');
+    }
   }
 
   async findOne(id: number) {
-    const user = await this.usersRepository.findOneBy({ id: id });
-
-    return user;
-  }
-
-  async update(id: number, updateUserDto: UpdateUserDto) {
-    const user = await this.usersRepository.findOneBy({ id: id });
-
-    if (!user) {
-      return { status: false };
+    try {
+      return await this.usersRepository.findOneBy({ id: id });
+    } catch (error) {
+      console.error(error);
+      throw new Error('Error fetching user');
     }
-
-    user.name = updateUserDto.name;
-    user.email = updateUserDto.email;
-
-    if (updateUserDto.password) {
-      user.password = await bcrypt.hash(updateUserDto.password, 10);
-    }
-
-    return this.usersRepository.save(user);
-  }
-
-  async remove(id: number) {
-    const user = await this.usersRepository.findOneBy({ id: id });
-
-    if (!user) {
-      return { status: false };
-    }
-
-    return await this.usersRepository.softDelete(id);
   }
 }

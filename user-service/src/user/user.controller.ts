@@ -8,10 +8,6 @@ import PaginationDto from './dto/find-all-user.dto';
 import { plainToInstance } from 'class-transformer';
 import { UserDto } from './dto/user-respose.dto';
 
-// import { CreateUserDto } from './dto/create-user.dto';
-// import { UpdateUserDto } from './dto/update-user.dto';
-// import { SignInDto } from './dto/signin-check.dto';
-
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
