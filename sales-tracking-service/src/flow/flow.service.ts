@@ -4,6 +4,7 @@ import { Flow } from 'src/schemas/flow.schema';
 import { Model } from 'mongoose';
 import { FlowNote } from 'src/schemas/flow-note.schema';
 import { CreateFlowDto } from './dto/create-flow.dto';
+import { FlowStatus } from 'src/schemas/flow-status.schema';
 // import { Connection } from 'mongoose';
 // import { InjectConnection } from '@nestjs/mongoose';
 
@@ -14,6 +15,8 @@ export class FlowService {
     private flowModel: Model<Flow>,
     @InjectModel(FlowNote.name)
     private flowNote: Model<FlowNote>,
+    @InjectModel(FlowStatus.name)
+    private flowStatus: Model<FlowStatus>,
     // @InjectConnection() private readonly connection: Connection,
   ) {}
 
@@ -26,16 +29,23 @@ export class FlowService {
     try {
       // session.startTransaction();
 
+      // aynı status den varsa ekleme yapma eklencek
+
       // Müşteriye ait aktif akışları deaktive ediyoruz
       await this.flowModel.updateMany(
         { customer_id: createCustomerNoteDto.customer_id, isActive: true },
         { $set: { isActive: false } },
+      );
+      console.log(createCustomerNoteDto.flowStatusId);
+      const flowStatus = await this.flowStatus.findById(
+        createCustomerNoteDto.flowStatusId,
       );
 
       // Yeni Flow kaydını oluşturuyoruz
       const newFlow = await new this.flowModel({
         created_by_id: created_by_id,
         customer_id: createCustomerNoteDto.customer_id,
+        flowStatusId: flowStatus._id,
       }).save();
 
       // Yeni FlowNote ekliyoruz
@@ -48,6 +58,42 @@ export class FlowService {
       return { status: true, newFlow: newFlow };
     } catch (error) {
       throw new Error(`Transaction failed: ${error.message}`);
+    }
+  }
+
+  async getFlows() {
+    try {
+      const response = await this.flowModel.aggregate([
+        {
+          $lookup: {
+            from: 'flowstatuses', // düzeltilmiş
+            localField: 'flowStatusId',
+            foreignField: '_id',
+            as: 'flowStatus',
+          },
+        },
+        { $unwind: '$flowStatus' },
+        {
+          $lookup: {
+            from: 'flownotes', // düzeltilmiş
+            localField: '_id',
+            foreignField: 'flowId',
+            as: 'notes', // content yerine notes
+          },
+        },
+        {
+          $project: {
+            _id: 1,
+            customer_id: 1,
+            status: '$flowStatus.name',
+            notes: '$notes.content',
+          },
+        },
+      ]);
+      console.log(response);
+      return { status: true, newFlow: response };
+    } catch (error) {
+      console.error(error);
     }
   }
 }

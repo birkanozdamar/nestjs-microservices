@@ -43,4 +43,33 @@ export class FlowService {
       });
     }
   }
+
+  async getFlowStatuses(response: Response) {
+    try {
+      const res = await this.salesTrackingServiceClient
+        .send<any>(
+          { cmd: 'getFlows' },
+          { someParam: 'value' }, // Beklenen parametreyi burada sağla
+        )
+        .toPromise();
+
+      console.log(res);
+
+      if (!res) {
+        return response.status(HttpStatus.NOT_FOUND).send({
+          message: 'Satış Durumları Bulunamadı!',
+        });
+      }
+
+      return response.status(HttpStatus.OK).send({
+        message: 'Satış Durumları!',
+        customerNotes: res,
+      });
+    } catch (error) {
+      console.error(error);
+      return response.status(HttpStatus.BAD_REQUEST).send({
+        message: 'Satış Durumu Bulunamadı!',
+      });
+    }
+  }
 }

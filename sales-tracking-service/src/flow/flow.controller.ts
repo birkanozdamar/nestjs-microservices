@@ -19,4 +19,13 @@ export class FlowController {
 
     return this.flowService.createFlow(created_by_id, createFlowDto);
   }
+
+  @MessagePattern({ cmd: 'getFlows' })
+  async getFlows(@Payload() params: any) {
+    if (!params) {
+      throw new Error('No parameters provided');
+    }
+
+    return await this.flowService.getFlows();
+  }
 }

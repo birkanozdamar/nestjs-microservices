@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   Post,
   Request,
   Res,
@@ -29,5 +30,10 @@ export class FlowController {
       response,
       request,
     );
+  }
+
+  @Get()
+  async getFlows(@Res() response: Response) {
+    return this.flowService.getFlowStatuses(response);
   }
 }

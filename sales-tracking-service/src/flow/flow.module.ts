@@ -4,6 +4,7 @@ import { FlowController } from './flow.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Flow, FlowSchema } from 'src/schemas/flow.schema';
 import { FlowNote, FlowNoteSchema } from 'src/schemas/flow-note.schema';
+import { FlowStatus, FlowStatusSchema } from 'src/schemas/flow-status.schema';
 
 @Module({
   imports: [
@@ -15,6 +16,10 @@ import { FlowNote, FlowNoteSchema } from 'src/schemas/flow-note.schema';
       {
         name: FlowNote.name,
         schema: FlowNoteSchema,
+      },
+      {
+        name: FlowStatus.name,
+        schema: FlowStatusSchema,
       },
     ]),
   ],
