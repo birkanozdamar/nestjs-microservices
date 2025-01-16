@@ -4,18 +4,25 @@ import {
   Delete,
   Get,
   Param,
+  ParseEnumPipe,
   ParseIntPipe,
   Post,
   Put,
   Res,
   UseGuards,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiParam,
+  ApiResponse,
+} from '@nestjs/swagger';
 import { Response } from 'express';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { CustomerService } from './customer.service';
 import { CreateCustomerDto } from './dto/create-customer.dto';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
+import { SortOrder } from 'constants/customerServiceResponseType';
 
 @ApiBearerAuth()
 @Controller('customer')
@@ -41,11 +48,29 @@ export class CustomerController {
   }
 
   @Get('/:page/:limit/:sorting')
+  @ApiParam({
+    name: 'page',
+    type: Number,
+    example: 1,
+    description: 'Sayfa numarası',
+  })
+  @ApiParam({
+    name: 'limit',
+    type: Number,
+    example: 10,
+    description: 'Sayfadaki kayıt sayısı',
+  })
+  @ApiParam({
+    name: 'sorting',
+    enum: SortOrder,
+    example: 'ASC',
+    description: 'Sıralama türü',
+  })
   async findAll(
     @Res() response: Response,
     @Param('page') page: number,
     @Param('limit') limit: number,
-    @Param('sorting') sorting: [],
+    @Param('sorting', new ParseEnumPipe(SortOrder)) sorting: SortOrder,
   ) {
     return this.customerService.findAll(response, page, limit, sorting);
   }

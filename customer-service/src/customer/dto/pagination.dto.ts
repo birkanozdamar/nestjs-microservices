@@ -1,4 +1,4 @@
-import { IsInt, IsOptional } from 'class-validator';
+import { IsIn, IsInt, IsOptional } from 'class-validator';
 
 export default class PaginationDto {
   @IsOptional()
@@ -8,4 +8,8 @@ export default class PaginationDto {
   @IsOptional()
   @IsInt()
   limit: number = 10;
+
+  @IsOptional()
+  @IsIn(['ASC', 'DESC'])
+  order: 'ASC' | 'DESC' = 'ASC';
 }

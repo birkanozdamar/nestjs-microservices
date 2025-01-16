@@ -59,3 +59,8 @@ export interface CustomerNoteType {
   customer_id: number;
   created_by_id: number;
 }
+
+export enum SortOrder {
+  ASC = 'ASC',
+  DESC = 'DESC',
+}

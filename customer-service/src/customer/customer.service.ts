@@ -103,12 +103,15 @@ export class CustomerService {
 
   async findAll(paginationDto: PaginationDto): Promise<Customer[]> {
     try {
-      const { page, limit } = paginationDto;
+      const { page, limit, order } = paginationDto;
       const skip = (page - 1) * limit;
 
       return this.customersRepository.find({
         skip: skip,
         take: limit,
+        order: {
+          createdAt: order,
+        },
       });
     } catch (error) {
       console.error(error);

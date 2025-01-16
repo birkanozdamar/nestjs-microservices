@@ -6,6 +6,7 @@ import {
   CreateCustomerServiceResponseType,
   FindAllCustomerServiceResponseType,
   FindCustomerServiceResponseType,
+  SortOrder,
 } from 'constants/customerServiceResponseType';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
 
@@ -43,12 +44,17 @@ export class CustomerService {
     }
   }
 
-  async findAll(response: Response, page: number, limit: number, sorting) {
+  async findAll(
+    response: Response,
+    page: number,
+    limit: number,
+    order: SortOrder,
+  ) {
     try {
       const { status, customers } = await this.customerServiceClient
         .send<FindAllCustomerServiceResponseType>(
           { cmd: 'findAllCustomer' },
-          { page, limit },
+          { page, limit, order },
         )
         .toPromise();
 
