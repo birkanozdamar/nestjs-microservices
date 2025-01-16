@@ -4,6 +4,8 @@ import { UserService } from './user.service';
 
 describe('UserController', () => {
   let controller: UserController;
+  let service: UserService;
+
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
