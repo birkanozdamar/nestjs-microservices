@@ -89,7 +89,7 @@ export class FlowService {
           },
         },
       ]);
-      return { status: true, newFlow: response };
+      return { status: true, flows: response };
     } catch (error) {
       console.error(error);
     }

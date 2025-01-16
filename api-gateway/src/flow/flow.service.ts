@@ -1,7 +1,10 @@
 import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { CreateFlowDto } from './dto/create-flow.dto';
-import { CreateFlowSalesTrackingServiceResponseType } from 'constants/salesTrackingServiceResponseType';
+import {
+  CreateFlowSalesTrackingServiceResponseType,
+  GetFlowsSalesTrackingServiceResponseType,
+} from 'constants/salesTrackingServiceResponseType';
 import { Response } from 'express';
 
 @Injectable()
@@ -45,15 +48,14 @@ export class FlowService {
 
   async getFlowStatuses(response: Response) {
     try {
-      const res = await this.salesTrackingServiceClient
-        .send<any>(
+      const { status, flows } = await this.salesTrackingServiceClient
+        .send<GetFlowsSalesTrackingServiceResponseType>(
           { cmd: 'getFlows' },
           { someParam: 'value' }, // Beklenen parametreyi burada sağla
         )
         .toPromise();
 
-
-      if (!res) {
+      if (!status) {
         return response.status(HttpStatus.NOT_FOUND).send({
           message: 'Satış Durumları Bulunamadı!',
         });
@@ -61,7 +63,7 @@ export class FlowService {
 
       return response.status(HttpStatus.OK).send({
         message: 'Satış Durumları!',
-        customerNotes: res,
+        flows: flows,
       });
     } catch (error) {
       console.error(error);

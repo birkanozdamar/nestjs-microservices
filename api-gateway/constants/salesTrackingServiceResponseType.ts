@@ -23,3 +23,16 @@ export interface FlowType {
   created_by_id: string;
   created_at: string;
 }
+
+export interface GetFlowsSalesTrackingServiceResponseType {
+  status: boolean;
+  flows: GetFlowsType;
+  message: string;
+}
+
+export interface GetFlowsType {
+  _id: string;
+  customer_id: string;
+  status: string;
+  notes: string[];
+}
