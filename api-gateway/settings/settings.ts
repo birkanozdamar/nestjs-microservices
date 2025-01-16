@@ -36,3 +36,14 @@ export const CustomerServiceTCPConnectionSettings: ClientProviderOptions = {
     port: 4001,
   },
 };
+
+//Sales Servis TCP bağlantı Ayarları
+export const SalesTrackingServiceTCPConnectionSettings: ClientProviderOptions =
+  {
+    name: 'SALES_TRACKING_SERVICE',
+    transport: Transport.TCP,
+    options: {
+      host: 'sales-tracking-service',
+      port: 4002,
+    },
+  };

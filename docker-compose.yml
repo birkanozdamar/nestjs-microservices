@@ -21,42 +21,38 @@ services:
     build:
       context: ./sales-tracking-service
     container_name: sales-tracking-service
-    environment:
-      - DATABASE_HOST=sales-tracking-service-db
-      - DATABASE_PORT=3306
-      - DATABASE_USER=root
-      - DATABASE_PASSWORD=root
-      - DATABASE_NAME=salesTrackingServiceDb
     depends_on:
-      sales-tracking-service-db:
+      sales-tracking-mongo-db:
         condition: service_healthy
     networks:
-      - sales-tracking-service-db-network
+      - sales-tracking-db-network
       - gateway-network
     restart: unless-stopped
     volumes:
       - ./sales-tracking-service:/usr/src/app
       - ./sales-tracking-service/node_modules:/usr/src/app/node_modules
 
-  sales-tracking-service-db:
-    image: mysql:8
-    container_name: sales-tracking-service-db
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: salesTrackingServiceDb
-    volumes:
-      - sales-tracking-service-db-data:/var/lib/mysql
+
+  sales-tracking-mongo-db:
+    image: mongo:6.0
+    container_name: sales-tracking-mongo-db
     ports:
-    # test için açık
-      - "3308:3306" 
+    - 27018:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin123
+    volumes:
+      - sales-tracking-mongo-db:/data/db
     networks:
-      - sales-tracking-service-db-network
+      - sales-tracking-db-network         
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      test: ["CMD", "mongosh", "--eval", "db.runCommand('ping').ok == 1", "--quiet", "--host", "localhost", "-u", "admin", "-p", "admin123"]
       interval: 10s
       timeout: 5s
       retries: 5
+    logging:
+      driver: "none"   
 
   user-service:
     build:
@@ -146,6 +142,7 @@ services:
     image: mongo:6.0
     container_name: customer-mongo-db
     ports:
+    # test için açık
     - 27017:27017                 
     environment:
       MONGO_INITDB_ROOT_USERNAME: admin
@@ -170,7 +167,7 @@ networks:
     driver: bridge
   gateway-network:
     driver: bridge
-  sales-tracking-service-db-network:
+  sales-tracking-db-network:
     driver: bridge
 
 volumes:
@@ -180,5 +177,5 @@ volumes:
   sales-tracking-service:
   user-db-data:
   customer-db-data:
-  sales-tracking-service-db-data:
+  sales-tracking-mongo-db:
   customer-mongo-db:

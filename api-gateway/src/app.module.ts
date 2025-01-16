@@ -7,6 +7,7 @@ import { AuthModule } from './auth/auth.module';
 import { RoleModule } from './role/role.module';
 import { CustomerModule } from './customer/customer.module';
 import { CustomerNoteModule } from './customer-note/customer-note.module';
+import { SalesFlowStatusModule } from './sales-flow-status/sales-flow-status.module';
 
 @Module({
   imports: [
@@ -30,11 +31,22 @@ import { CustomerNoteModule } from './customer-note/customer-note.module';
         },
       },
     ]),
+    ClientsModule.register([
+      {
+        name: 'SALES_TRACKING_SERVICE',
+        transport: Transport.TCP,
+        options: {
+          host: 'customer-service',
+          port: 4002,
+        },
+      },
+    ]),
     UserModule,
     AuthModule,
     RoleModule,
     CustomerModule,
     CustomerNoteModule,
+    SalesFlowStatusModule,
   ],
   controllers: [AppController],
   providers: [AppService],
