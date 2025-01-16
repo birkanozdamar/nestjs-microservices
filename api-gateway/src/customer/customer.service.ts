@@ -49,12 +49,13 @@ export class CustomerService {
     page: number,
     limit: number,
     order: SortOrder,
+    name_filter: string,
   ) {
     try {
       const { status, customers } = await this.customerServiceClient
         .send<FindAllCustomerServiceResponseType>(
           { cmd: 'findAllCustomer' },
-          { page, limit, order },
+          { page, limit, order, name_filter },
         )
         .toPromise();
 

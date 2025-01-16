@@ -8,6 +8,7 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  Query,
   Res,
   UseGuards,
 } from '@nestjs/common';
@@ -71,8 +72,9 @@ export class CustomerController {
     @Param('page') page: number,
     @Param('limit') limit: number,
     @Param('sorting', new ParseEnumPipe(SortOrder)) sorting: SortOrder,
+    @Query('name-filter') filter: string,
   ) {
-    return this.customerService.findAll(response, page, limit, sorting);
+    return this.customerService.findAll(response, page, limit, sorting, filter);
   }
 
   @Get(':id')

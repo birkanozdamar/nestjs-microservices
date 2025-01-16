@@ -12,4 +12,7 @@ export default class PaginationDto {
   @IsOptional()
   @IsIn(['ASC', 'DESC'])
   order: 'ASC' | 'DESC' = 'ASC';
+
+  @IsOptional()
+  name_filter: string;
 }

@@ -103,10 +103,13 @@ export class CustomerService {
 
   async findAll(paginationDto: PaginationDto): Promise<Customer[]> {
     try {
-      const { page, limit, order } = paginationDto;
+      const { page, limit, order, name_filter } = paginationDto;
       const skip = (page - 1) * limit;
 
       return this.customersRepository.find({
+        where: {
+          name: name_filter,
+        },
         skip: skip,
         take: limit,
         order: {
