@@ -3,6 +3,7 @@ import { FlowService } from './flow.service';
 import { FlowController } from './flow.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Flow, FlowSchema } from 'src/schemas/flow.schema';
+import { FlowNote, FlowNoteSchema } from 'src/schemas/flow-note.schema';
 
 @Module({
   imports: [
@@ -10,6 +11,10 @@ import { Flow, FlowSchema } from 'src/schemas/flow.schema';
       {
         name: Flow.name,
         schema: FlowSchema,
+      },
+      {
+        name: FlowNote.name,
+        schema: FlowNoteSchema,
       },
     ]),
   ],

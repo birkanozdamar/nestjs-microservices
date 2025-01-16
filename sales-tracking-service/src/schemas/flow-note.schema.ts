@@ -8,6 +8,12 @@ export class FlowNote extends Document {
 
   @Prop({ type: Types.ObjectId, ref: 'Flow' })
   flowId: Types.ObjectId;
+
+  @Prop({ required: true })
+  created_by_id: string;
+
+  @Prop({ default: Date.now })
+  created_at: Date;
 }
 
 export const FlowNoteSchema = SchemaFactory.createForClass(FlowNote);
