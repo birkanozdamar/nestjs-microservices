@@ -40,13 +40,14 @@ export class CustomerController {
     return this.customerService.create(createCustomerDto, response);
   }
 
-  @Get('/:page/:limit')
+  @Get('/:page/:limit/:sorting')
   async findAll(
     @Res() response: Response,
     @Param('page') page: number,
     @Param('limit') limit: number,
+    @Param('sorting') sorting: [],
   ) {
-    return this.customerService.findAll(response, page, limit);
+    return this.customerService.findAll(response, page, limit, sorting);
   }
 
   @Get(':id')

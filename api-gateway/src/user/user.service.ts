@@ -7,7 +7,7 @@ import {
   CreateUserServiceResponseType,
   FindAllUserServiceResponseType,
   FindUserServiceResponseType,
-} from 'src/auth/constants/userServiceResponseTypes';
+} from 'constants/userServiceResponseTypes';
 
 @Injectable()
 export class UserService {

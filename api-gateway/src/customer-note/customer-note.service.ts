@@ -5,7 +5,7 @@ import {
   CreateCustomerNoteServiceResponseType,
   GetCustomerNotesServiceResponseType,
   UpdateCustomerNoteServiceResponseType,
-} from 'src/auth/constants/customerServiceResponseType';
+} from 'constants/customerServiceResponseType';
 import { CreateCustomerNoteDto } from 'src/customer-note/dto/create-customer-notes.dto';
 import { UpdateCustomerNotesDto } from './dto/update-customer-notes.dto';
 

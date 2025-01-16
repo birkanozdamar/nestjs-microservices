@@ -2,7 +2,7 @@ import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { LoginUserDto } from './dto/login-user.dto';
 import { JwtService } from '@nestjs/jwt';
-import { SignInUserServiceResponseType } from './constants/userServiceResponseTypes';
+import { SignInUserServiceResponseType } from '../../constants/userServiceResponseTypes';
 
 import { Response } from 'express';
 

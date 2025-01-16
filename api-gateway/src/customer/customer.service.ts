@@ -6,7 +6,7 @@ import {
   CreateCustomerServiceResponseType,
   FindAllCustomerServiceResponseType,
   FindCustomerServiceResponseType,
-} from 'src/auth/constants/customerServiceResponseType';
+} from 'constants/customerServiceResponseType';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
 
 @Injectable()
@@ -43,7 +43,7 @@ export class CustomerService {
     }
   }
 
-  async findAll(response: Response, page: number, limit: number) {
+  async findAll(response: Response, page: number, limit: number, sorting) {
     try {
       const { status, customers } = await this.customerServiceClient
         .send<FindAllCustomerServiceResponseType>(

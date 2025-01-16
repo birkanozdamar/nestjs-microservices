@@ -1,7 +1,7 @@
 import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { AssignRoleDto } from './dto/assign-role.dto';
-import { AssignRoleUserServiceResponseType } from 'src/auth/constants/userServiceResponseTypes';
+import { AssignRoleUserServiceResponseType } from 'constants/userServiceResponseTypes';
 import { Request, Response } from 'express';
 
 @Injectable()
