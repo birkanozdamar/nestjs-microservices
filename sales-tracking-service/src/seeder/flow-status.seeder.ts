@@ -12,7 +12,6 @@ export class FlowStatusSeeder implements OnModuleInit {
 
   async onModuleInit() {
     const existing = await this.flowStatusModel.countDocuments();
-    console.log(`Olan Kayıtlar: ${existing}`);
     if (existing === 0) {
       await this.flowStatusModel.insertMany([
         { name: 'Pending' },

@@ -39,7 +39,6 @@ export class CustomerNotesController {
     },
   ) {
     const { customer_note_id, created_by_id, updateCustomerNotesDto } = payload;
-    console.log(payload);
     const customerNote = await this.customerNotesService.updateCustomerNotes(
       customer_note_id,
       created_by_id,

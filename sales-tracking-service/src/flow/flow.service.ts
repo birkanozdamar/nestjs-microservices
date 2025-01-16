@@ -36,7 +36,6 @@ export class FlowService {
         { customer_id: createCustomerNoteDto.customer_id, isActive: true },
         { $set: { isActive: false } },
       );
-      console.log(createCustomerNoteDto.flowStatusId);
       const flowStatus = await this.flowStatus.findById(
         createCustomerNoteDto.flowStatusId,
       );
@@ -66,7 +65,7 @@ export class FlowService {
       const response = await this.flowModel.aggregate([
         {
           $lookup: {
-            from: 'flowstatuses', // düzeltilmiş
+            from: 'flowstatuses',
             localField: 'flowStatusId',
             foreignField: '_id',
             as: 'flowStatus',
@@ -75,10 +74,10 @@ export class FlowService {
         { $unwind: '$flowStatus' },
         {
           $lookup: {
-            from: 'flownotes', // düzeltilmiş
+            from: 'flownotes',
             localField: '_id',
             foreignField: 'flowId',
-            as: 'notes', // content yerine notes
+            as: 'notes',
           },
         },
         {
@@ -90,7 +89,6 @@ export class FlowService {
           },
         },
       ]);
-      console.log(response);
       return { status: true, newFlow: response };
     } catch (error) {
       console.error(error);

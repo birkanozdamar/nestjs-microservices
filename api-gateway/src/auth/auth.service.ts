@@ -15,7 +15,6 @@ export class AuthService {
 
   async loginUser(clientUser: LoginUserDto, response: Response): Promise<any> {
     try {
-      console.log('asd');
       const { status, user } = await this.authServiceClient
         .send<SignInUserServiceResponseType>(
           { cmd: 'signCheck' },

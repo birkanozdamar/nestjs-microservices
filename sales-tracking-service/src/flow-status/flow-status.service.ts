@@ -11,9 +11,7 @@ export class FlowStatusService {
   ) {}
 
   async getFlowStatuses(test: any) {
-    console.log(test);
     const flowStatuses = await this.flowStatusModel.find();
-    console.log(flowStatuses);
     return { status: true, flowStatuses: flowStatuses };
   }
 }

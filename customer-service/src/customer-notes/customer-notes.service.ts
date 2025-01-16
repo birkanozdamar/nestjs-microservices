@@ -17,14 +17,12 @@ export class CustomerNotesService {
     created_by_id: number,
     createCustomerNoteDto: CreateCustomerNoteDto,
   ) {
-    console.log(createCustomerNoteDto);
     const newCustomerNote = await new this.customerNotesModel({
       created_by_id: created_by_id,
       customer_id: createCustomerNoteDto.customer_id,
       customer_not: createCustomerNoteDto.customer_not,
     }).save();
 
-    console.log(newCustomerNote);
 
     return { status: true, customerNote: newCustomerNote };
   }

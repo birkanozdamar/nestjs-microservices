@@ -8,7 +8,6 @@ export class FlowStatusController {
 
   @MessagePattern({ cmd: 'getFlowStatuses' })
   async getFlowStatuses(@Payload() params: any) {
-    console.log('asdasdasd');
     if (!params) {
       throw new Error('No parameters provided');
     }

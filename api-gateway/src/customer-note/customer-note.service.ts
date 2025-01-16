@@ -56,7 +56,6 @@ export class CustomerNoteService {
         )
         .toPromise();
 
-      console.log(customerNotes);
 
       if (!status) {
         return response.status(HttpStatus.NOT_FOUND).send({

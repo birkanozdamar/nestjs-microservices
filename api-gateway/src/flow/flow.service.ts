@@ -24,8 +24,7 @@ export class FlowService {
           { created_by_id, createFlowDto },
         )
         .toPromise();
-      console.log('+++asdasdasd+++');
-      console.log(newFlow);
+
       if (!status) {
         return response.status(HttpStatus.BAD_REQUEST).send({
           message: 'Müşteri Akışı Kayıt başarısız!',
@@ -53,7 +52,6 @@ export class FlowService {
         )
         .toPromise();
 
-      console.log(res);
 
       if (!res) {
         return response.status(HttpStatus.NOT_FOUND).send({

@@ -19,7 +19,6 @@ export class SalesFlowStatusService {
         )
         .toPromise();
 
-      console.log(flowStatuses);
 
       if (!status) {
         return response.status(HttpStatus.NOT_FOUND).send({
