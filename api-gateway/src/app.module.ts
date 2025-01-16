@@ -8,6 +8,7 @@ import { RoleModule } from './role/role.module';
 import { CustomerModule } from './customer/customer.module';
 import { CustomerNoteModule } from './customer-note/customer-note.module';
 import { SalesFlowStatusModule } from './sales-flow-status/sales-flow-status.module';
+import { FlowModule } from './flow/flow.module';
 
 @Module({
   imports: [
@@ -47,6 +48,7 @@ import { SalesFlowStatusModule } from './sales-flow-status/sales-flow-status.mod
     CustomerModule,
     CustomerNoteModule,
     SalesFlowStatusModule,
+    FlowModule,
   ],
   controllers: [AppController],
   providers: [AppService],
