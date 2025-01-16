@@ -1,0 +1,11 @@
+{
+  "name": "nestjs-microservice",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "install-all": "cd api-gateway && npm install && cd .. && cd customer-service && npm install && cd .. && cd sales-tracking-service && npm install && cd .. && cd user-service && npm install && cd .."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
