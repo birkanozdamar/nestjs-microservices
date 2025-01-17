@@ -17,6 +17,14 @@ export class UserService {
 
   async create(createUserDto: CreateUserDto, response: Response) {
     try {
+      const isUniqEmail = await this.isEmailUnique(createUserDto.email);
+
+      if (!isUniqEmail) {
+        return response.status(HttpStatus.CONFLICT).send({
+          message: 'Bu email ile kayıt zaten mevcut!',
+        });
+      }
+
       const { status, user } = await this.userServiceClient
         .send<CreateUserServiceResponseType>(
           { cmd: 'createUser' },
@@ -141,6 +149,17 @@ export class UserService {
       return response.status(HttpStatus.BAD_REQUEST).send({
         message: 'İşlem Başarısız!',
       });
+    }
+  }
+  async isEmailUnique(email: string): Promise<boolean> {
+    try {
+      const res = await this.userServiceClient
+        .send<boolean>({ cmd: 'checkEmailUnique' }, { email })
+        .toPromise();
+      return res;
+    } catch (error) {
+      console.error(error);
+      return false;
     }
   }
 }

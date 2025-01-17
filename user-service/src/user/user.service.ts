@@ -158,4 +158,18 @@ export class UserService {
       throw new Error('Error fetching user');
     }
   }
+
+  async checkEmailUnique(email: string): Promise<boolean> {
+    try {
+      const user = await this.usersRepository.findBy({ email: email });
+
+      if (user) {
+        return false;
+      }
+      return true;
+    } catch (error) {
+      console.error(error);
+      throw new Error('Error fetching user');
+    }
+  }
 }

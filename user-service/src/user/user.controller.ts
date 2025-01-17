@@ -22,6 +22,11 @@ export class UserController {
     return this.userService.create(createUserDto);
   }
 
+  @MessagePattern({ cmd: 'checkEmailUnique' })
+  checkEmailUnique(@Payload() data: { email: string }) {
+    return this.userService.checkEmailUnique(data.email);
+  }
+
   @MessagePattern({ cmd: 'findAllUser' })
   async findAll(@Payload() findAllDto: PaginationDto) {
     const users = await this.userService.findAll(findAllDto);
