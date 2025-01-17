@@ -5,7 +5,7 @@ import { SignInDto } from './dto/signin-check.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Repository, DataSource } from 'typeorm';
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcryptjs';
 import PaginationDto from './dto/pagination.dto';
 
 @Injectable()

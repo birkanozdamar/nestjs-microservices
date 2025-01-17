@@ -1,5 +1,5 @@
-import * as bcrypt from 'bcrypt';
 import { User } from 'src/user/entities/user.entity';
+import * as bcrypt from 'bcryptjs';
 
 export const createSuperAdmin = async (): Promise<User> => {
   const user = new User();
