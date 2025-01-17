@@ -14,7 +14,7 @@ export class FlowService {
     private readonly salesTrackingServiceClient: ClientProxy,
   ) {}
 
-  async createCustomerNote(
+  async createFlow(
     createFlowDto: CreateFlowDto,
     response: Response,
     request: Request,
@@ -51,7 +51,7 @@ export class FlowService {
       const { status, flows } = await this.salesTrackingServiceClient
         .send<GetFlowsSalesTrackingServiceResponseType>(
           { cmd: 'getFlows' },
-          { someParam: 'value' }, // Beklenen parametreyi burada sağla
+          { someParam: 'value' },
         )
         .toPromise();
 

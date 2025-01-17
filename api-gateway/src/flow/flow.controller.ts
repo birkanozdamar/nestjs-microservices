@@ -20,16 +20,12 @@ export class FlowController {
   constructor(private readonly flowService: FlowService) {}
 
   @Post()
-  createCustomerNote(
+  createFlow(
     @Request() request,
     @Res() response: Response,
     @Body() createFlowDto: CreateFlowDto,
   ) {
-    return this.flowService.createCustomerNote(
-      createFlowDto,
-      response,
-      request,
-    );
+    return this.flowService.createFlow(createFlowDto, response, request);
   }
 
   @Get()

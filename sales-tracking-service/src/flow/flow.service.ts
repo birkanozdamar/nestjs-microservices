@@ -64,6 +64,11 @@ export class FlowService {
     try {
       const response = await this.flowModel.aggregate([
         {
+          $match: {
+            isActive: true,
+          },
+        },
+        {
           $lookup: {
             from: 'flowstatuses',
             localField: 'flowStatusId',
@@ -86,6 +91,7 @@ export class FlowService {
             customer_id: 1,
             status: '$flowStatus.name',
             notes: '$notes.content',
+            isActive: '$isActive',
           },
         },
       ]);
