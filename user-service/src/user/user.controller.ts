@@ -18,8 +18,18 @@ export class UserController {
   }
 
   @MessagePattern({ cmd: 'createUser' })
-  create(@Payload() createUserDto: CreateUserDto) {
-    return this.userService.create(createUserDto);
+  async create(@Payload() createUserDto: CreateUserDto) {
+    const user = await this.userService.create(createUserDto);
+
+    const usersResponse = plainToInstance(UserDto, user.user, {
+      excludeExtraneousValues: true,
+    });
+
+    return {
+      status: true,
+      user: usersResponse,
+      messages: 'Kullanıcı',
+    };
   }
 
   @MessagePattern({ cmd: 'checkEmailUnique' })
