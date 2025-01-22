@@ -4,6 +4,7 @@ import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { seedSuperAdmin } from 'database/seeder/user.seeder';
 import { DataSource } from 'typeorm';
 import { seedRoles } from 'database/seeder/role.seeder';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(
@@ -15,6 +16,14 @@ async function bootstrap() {
         port: 4000, // TCP portu
       },
     },
+  );
+
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+      whitelist: true,
+      forbidNonWhitelisted: true,
+    }),
   );
 
   // başlangıç verilerini kontrol eder yoksa ekler burada

@@ -19,17 +19,9 @@ export class UserController {
 
   @MessagePattern({ cmd: 'createUser' })
   async create(@Payload() createUserDto: CreateUserDto) {
-    const user = await this.userService.create(createUserDto);
-
-    const usersResponse = plainToInstance(UserDto, user.user, {
-      excludeExtraneousValues: true,
-    });
-
-    return {
-      status: true,
-      user: usersResponse,
-      messages: 'Kullanıcı',
-    };
+    const res = await this.userService.create(createUserDto);
+    console.log(res.user);
+    return res;
   }
 
   @MessagePattern({ cmd: 'checkEmailUnique' })
@@ -73,17 +65,7 @@ export class UserController {
   ) {
     const { id, updateUserDto } = payload;
 
-    const user = await this.userService.update(id, updateUserDto);
-
-    const userResponse = plainToInstance(UserDto, user, {
-      excludeExtraneousValues: true,
-    });
-
-    return {
-      status: true,
-      user: userResponse,
-      messages: 'Kullanıcı Güncellendi',
-    };
+    return await this.userService.update(id, updateUserDto);
   }
 
   @MessagePattern({ cmd: 'removeUser' })

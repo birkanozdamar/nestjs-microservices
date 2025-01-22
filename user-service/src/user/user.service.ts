@@ -7,6 +7,8 @@ import { User } from './entities/user.entity';
 import { Repository, DataSource } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
 import PaginationDto from './dto/pagination.dto';
+import { plainToInstance } from 'class-transformer';
+import { UserDto } from './dto/user-respose.dto';
 
 @Injectable()
 export class UserService {
@@ -63,7 +65,10 @@ export class UserService {
 
       return {
         status: true,
-        user: user,
+        user: plainToInstance(UserDto, user, {
+          excludeExtraneousValues: true,
+        }),
+        messages: 'Kullanıcı Kayıt Edildi',
       };
     } catch (error) {
       await queryRunner.rollbackTransaction();
@@ -100,7 +105,13 @@ export class UserService {
       await queryRunner.manager.save(user);
       await queryRunner.commitTransaction();
 
-      return { status: true, user };
+      return {
+        status: true,
+        user: plainToInstance(UserDto, user, {
+          excludeExtraneousValues: true,
+        }),
+        messages: 'Kullanıcı Güncellendi',
+      };
     } catch (error) {
       await queryRunner.rollbackTransaction();
       console.error(error);
