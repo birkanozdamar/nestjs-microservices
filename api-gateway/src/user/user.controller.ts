@@ -15,11 +15,12 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { Response } from 'express';
-import { AuthGuard } from 'src/auth/auth.guard';
+import { AuthGuard } from 'guards/auth.guard';
+import { FingerPrintGuard } from 'guards/finger-print.guard';
 
 @ApiBearerAuth()
 @Controller('user')
-@UseGuards(AuthGuard)
+@UseGuards(AuthGuard, FingerPrintGuard)
 export class UserController {
   constructor(private readonly userService: UserService) {}
 

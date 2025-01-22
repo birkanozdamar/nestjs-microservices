@@ -162,11 +162,7 @@ export class UserService {
   async checkEmailUnique(email: string): Promise<boolean> {
     try {
       const user = await this.usersRepository.findBy({ email: email });
-
-      if (user) {
-        return false;
-      }
-      return true;
+      return user.length > 0;
     } catch (error) {
       console.error(error);
       throw new Error('Error fetching user');

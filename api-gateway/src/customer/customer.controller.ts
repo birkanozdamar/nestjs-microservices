@@ -19,15 +19,16 @@ import {
   ApiResponse,
 } from '@nestjs/swagger';
 import { Response } from 'express';
-import { AuthGuard } from 'src/auth/auth.guard';
+import { AuthGuard } from 'guards/auth.guard';
 import { CustomerService } from './customer.service';
 import { CreateCustomerDto } from './dto/create-customer.dto';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
 import { SortOrder } from 'constants/customerServiceResponseType';
+import { FingerPrintGuard } from 'guards/finger-print.guard';
 
 @ApiBearerAuth()
 @Controller('customer')
-@UseGuards(AuthGuard)
+@UseGuards(AuthGuard, FingerPrintGuard)
 export class CustomerController {
   constructor(private readonly customerService: CustomerService) {}
 

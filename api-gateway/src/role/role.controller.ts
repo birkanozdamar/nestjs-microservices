@@ -7,7 +7,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { AuthGuard } from 'src/auth/auth.guard';
+import { AuthGuard } from 'guards/auth.guard';
 import { AssignRoleDto } from './dto/assign-role.dto';
 import { RoleService } from './role.service';
 import { Response } from 'express';

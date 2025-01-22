@@ -1,10 +1,16 @@
-import { HttpStatus, Inject, Injectable } from '@nestjs/common';
+import {
+  HttpStatus,
+  Inject,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { LoginUserDto } from './dto/login-user.dto';
 import { JwtService } from '@nestjs/jwt';
 import { SignInUserServiceResponseType } from '../../constants/userServiceResponseTypes';
 
-import { Response } from 'express';
+import { Request, Response } from 'express';
+import { getSHA512Hash } from 'src/util/sha512.hash';
 
 @Injectable()
 export class AuthService {
@@ -13,7 +19,11 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async loginUser(clientUser: LoginUserDto, response: Response): Promise<any> {
+  async loginUser(
+    clientUser: LoginUserDto,
+    response: Response,
+    request: Request,
+  ): Promise<any> {
     try {
       const { status, user } = await this.authServiceClient
         .send<SignInUserServiceResponseType>(
@@ -23,15 +33,21 @@ export class AuthService {
         .toPromise();
 
       if (!status) {
-        return response.status(HttpStatus.UNAUTHORIZED).send({
-          message: 'Giriş başarısız!',
-        });
+        throw new UnauthorizedException('Giriş Başarısız1');
       }
 
-      const payload = { id: user.id, email: user.email };
+      const ip =
+        request.headers['x-forwarded-for'] || request.socket.remoteAddress;
+      const userAgent = request.headers['user-agent'];
+
+      const payload = {
+        email: user.email,
+        fingerprint: getSHA512Hash(`${ip}${userAgent}`),
+      };
+
       return response.status(HttpStatus.OK).send({
         message: 'Giriş başarılı!',
-        access_token: await this.jwtService.signAsync(payload),
+        access_token: await this.jwtService.sign(payload),
       });
     } catch (error) {
       console.error(error);

@@ -19,7 +19,7 @@ export class UserService {
     try {
       const isUniqEmail = await this.isEmailUnique(createUserDto.email);
 
-      if (!isUniqEmail) {
+      if (isUniqEmail) {
         return response.status(HttpStatus.CONFLICT).send({
           message: 'Bu email ile kayıt zaten mevcut!',
         });

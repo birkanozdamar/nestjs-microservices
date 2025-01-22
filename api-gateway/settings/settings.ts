@@ -1,5 +1,6 @@
 import * as dotenv from 'dotenv';
 import { ClientProviderOptions, Transport } from '@nestjs/microservices';
+import { Algorithm } from 'jsonwebtoken';
 
 dotenv.config();
 
@@ -8,7 +9,7 @@ dotenv.config();
 export const jwtSettings = {
   global: true,
   secret: process.env.JWT_SECRET,
-  signOptions: { expiresIn: '1d' },
+  signOptions: { expiresIn: '1d', algorithm: 'HS512' as Algorithm },
 };
 
 //ThrottlerModule Ayarları DDOS atak için request sınırlıyıcı

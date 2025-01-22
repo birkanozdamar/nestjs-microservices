@@ -12,7 +12,7 @@ import {
 import { CustomerNoteService } from './customer-note.service';
 import { CreateCustomerNoteDto } from './dto/create-customer-notes.dto';
 import { Response } from 'express';
-import { AuthGuard } from 'src/auth/auth.guard';
+import { AuthGuard } from 'guards/auth.guard';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { UpdateCustomerNotesDto } from './dto/update-customer-notes.dto';
 

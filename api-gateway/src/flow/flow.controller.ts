@@ -11,7 +11,7 @@ import { FlowService } from './flow.service';
 import { CreateFlowDto } from './dto/create-flow.dto';
 import { Response } from 'express';
 import { ApiBearerAuth } from '@nestjs/swagger';
-import { AuthGuard } from 'src/auth/auth.guard';
+import { AuthGuard } from 'guards/auth.guard';
 
 @ApiBearerAuth()
 @UseGuards(AuthGuard)
