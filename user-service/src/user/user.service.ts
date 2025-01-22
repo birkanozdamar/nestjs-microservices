@@ -76,7 +76,7 @@ export class UserService {
       return {
         status: false,
         user: '',
-        message: error,
+        messages: error,
       };
     } finally {
       await queryRunner.release();
