@@ -12,9 +12,10 @@ import { CreateFlowDto } from './dto/create-flow.dto';
 import { Response } from 'express';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { AuthGuard } from 'guards/auth.guard';
+import { FingerPrintGuard } from 'guards/finger-print.guard';
 
 @ApiBearerAuth()
-@UseGuards(AuthGuard)
+@UseGuards(AuthGuard, FingerPrintGuard)
 @Controller('flow')
 export class FlowController {
   constructor(private readonly flowService: FlowService) {}

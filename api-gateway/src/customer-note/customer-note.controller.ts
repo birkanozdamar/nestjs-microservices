@@ -15,9 +15,10 @@ import { Response } from 'express';
 import { AuthGuard } from 'guards/auth.guard';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { UpdateCustomerNotesDto } from './dto/update-customer-notes.dto';
+import { FingerPrintGuard } from 'guards/finger-print.guard';
 
 @ApiBearerAuth()
-@UseGuards(AuthGuard)
+@UseGuards(AuthGuard, FingerPrintGuard)
 @Controller('customer-note')
 export class CustomerNoteController {
   constructor(private readonly customerNoteService: CustomerNoteService) {}
